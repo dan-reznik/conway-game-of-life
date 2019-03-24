@@ -43,11 +43,12 @@ df_to_sparse <- function(df,width) {
 }
 ```
 
-Conway simulation and plots
+Conway simulation and plots. Main workhorse is `conway_step()` in the
+“conway.R” file
 
 ``` r
 set.seed(1)
-side<-20
+side<- 100
 dfs <- 1:60 %>%
   accumulate(~{print(.y);conway_step(.x,side)},
              .init=random_df(side,(side^2)/10))
