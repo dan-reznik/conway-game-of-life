@@ -4,11 +4,7 @@
 The [Game of
 Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), also known
 simply as Life, is a cellular automaton devised by the British
-mathematician John Horton Conway in 1970. The game is a zero-player
-game, meaning that its evolution is determined by its initial state,
-requiring no further input. One interacts with the Game of Life by
-creating an initial configuration and observing how it evolves, or, for
-advanced players, by creating patterns with particular properties.
+mathematician John Horton Conway in 1970.
 
 ## Survival rules:
 
@@ -29,51 +25,77 @@ initialized as “alive”. The update logic is contained in file `conway.R`
 included in the project.
 
 ``` r
-library(tidyverse)
+suppressMessages(library(tidyverse))
 library(Matrix)
 library(fs)
 library(magick)
+library(tictoc)
 source("conway.R")
 ```
 
 Plot a dataframe with columns (i,j) listing which cells are on.
 
 ``` r
-plot_df <- function(df,width,...) {
+plot_df <- function(df,frame=NULL) {
+  width <- attr(df,"width")
+  frame_s <- if(is.null(frame)) "" else sprintf(", frame=%d",frame)
   df %>%
-    mutate(density=T) %>%
     ggplot(aes(i,j)) +
-    geom_tile(aes(fill=density),height=1,width=1,...) +
+    geom_tile(aes(fill=status),height=1,width=1) +
     coord_fixed(xlim=c(1,width),ylim=c(1,width)) +
-    scale_fill_manual(values = c("black","white")) +
+    scale_fill_manual(values = c(live="blue",born="red",dead="white")) +
+    labs(title=sprintf("%d x %d%s",width,width,frame_s)) +
     #coord_cartesian(xlim=c(1L,width),ylim=c(1L,width)) +
-    theme(legend.position = "none",
+    theme(#legend.position = "none",
           axis.title = element_blank(),
           axis.text = element_blank(),
           panel.grid = element_blank(),
           #panel.grid.minor = element_blank(),
-          axis.ticks = element_blank())
+          axis.ticks = element_blank(),
+          legend.key.size = unit(2, "mm"))
 }
 ```
 
 Generate random samples in matrix
 
 ``` r
-random_df <- function(width,samples) {
-  tibble(i=sample.int(width,samples,replace=T),
-         j=sample.int(width,samples,replace=T))
+random_df <- function(width,pct_on) {
+  samples <- (width*width*pct_on) %>% as.integer
+  df <- tibble(i=sample.int(width,samples,replace=T),
+               j=sample.int(width,samples,replace=T),
+               status="live")
+  attr(df,"width") <- width
+  df
 }
 ```
+
+Create and plot random array
+
+``` r
+random_df(50,.1) %>% plot_df
+```
+
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+Run one iteration of a conway\_step (see `conway.R`)
+
+``` r
+random_df(50,.1) %>% conway_step %>% plot_df
+```
+
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 Conway simulation and plots. Main workhorse is `conway_step()` in the
 “conway.R” file
 
 ``` r
 set.seed(1)
-side<- 100
+side <- 64
+tic()
 dfs <- 1:60 %>%
-  accumulate(~{print(.y);conway_step(.x,side)},
-             .init=random_df(side,(side^2)/10))
+  accumulate(~{print(.y);conway_step(.x)},
+             .init=random_df(side,.2))
+toc()
 ```
 
 Save frames to .png files
@@ -84,8 +106,10 @@ if(dir_exists(dir_frames))
   dir_delete(dir_frames)
 dir_create(dir_frames)
 
-dfs%>%iwalk(~ggsave(sprintf("%s/%03d.png",dir_frames,.y),
-                      plot_df(.x,100)))
+dfs%>%iwalk(~{
+  fname<-sprintf("%s/%03d.png",dir_frames,.y)
+  ggsave(fname,plot_df(.x,.y))
+})
 ```
 
 Create animated .gif of frames
@@ -98,4 +122,4 @@ dir_ls("frames",regexp="\\d+\\.png") %>%
   image_write("conway.gif")
 ```
 
-![Conway Frames](conway.gif)
+<img src="conway.gif" width="100%" />

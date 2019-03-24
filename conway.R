@@ -11,7 +11,7 @@ count_on <- function(df,m) {
   df %>% pmap_int(~m[..1,..2]) %>% sum
 }
 
-count_neighs0 <- function(i,j,m) {
+count_neighs0 <- function(i,j,m,...) {
   width <- ncol(m)
   neighs <- get_neighs0(i,j,width) %>%
     count_on(m)
@@ -28,14 +28,18 @@ df_to_sparse <- function(df,width) {
 # Any live cell w/ (2,3) neighbors lives
 # Any dead cell w/ 3 neighbors lives
 
-conway_step <- function(df_m,width) { # sparse
+conway_step <- function(df_m) { # sparse
+  width <- attr(df_m,"width")
   m <- df_m %>% df_to_sparse(width)
+  
   live_cells <- df_m %>%
+    select(-status) %>% # so pmap works
     mutate(neighs=pmap_int(.,count_neighs0,m)) %>%
     filter(neighs%in%c(2,3)) %>%
     mutate(status="live")
-  
+  # only consider dead_cells near live ones
   dead_cells <- df_m %>%
+    select(-status) %>% # so pmap works
     pmap(get_neighs) %>%
     bind_rows %>%
     filter(between(i,1L,width),
@@ -46,6 +50,9 @@ conway_step <- function(df_m,width) { # sparse
     filter(neighs==3) %>%
     mutate(status="born")
   
-  live_cells%>%bind_rows(dead_cells)%>%
-    select(i,j)
+  df_out <- live_cells %>%
+    bind_rows(dead_cells) %>%
+    select(i,j,status)
+  attr(df_out,"width") <- width
+  df_out
 }
