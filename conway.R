@@ -18,6 +18,12 @@ count_neighs0 <- function(i,j,m) {
   neighs
 }
 
+df_to_sparse <- function(df,width) {
+  m <- Matrix(F,width,width,sparse=T) #"lsparseMatrix"
+  df %>% pmap(~{m[..1,..2]<<-T})
+  m
+}
+
 # Conway's rules: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 # Any live cell w/ (2,3) neighbors lives
 # Any dead cell w/ 3 neighbors lives

@@ -63,11 +63,6 @@ random_df <- function(width,samples) {
   tibble(i=sample.int(width,samples,replace=T),
          j=sample.int(width,samples,replace=T))
 }
-df_to_sparse <- function(df,width) {
-  m <- Matrix(F,width,width,sparse=T) #"lsparseMatrix"
-  df %>% pmap(~{m[..1,..2]<<-T})
-  m
-}
 ```
 
 Conway simulation and plots. Main workhorse is `conway_step()` in the
