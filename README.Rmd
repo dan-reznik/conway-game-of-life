@@ -52,9 +52,7 @@ df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 
 ```{r,fig.show='animate',eval=F,echo=F}
 # not working, requires ffmpeg
-plots <- df_sim_rand %>% map(plot_df)
-for (p in plots)
-  print(p)
+df_sim_rand %>% walk(~print(plot_df(.x)))
 ```
 
 ```{r create-anim-gif,echo=F,eval=F}
@@ -66,9 +64,11 @@ df_sim_rand %>% make_anim_gif("conway.gif")
 knitr::include_graphics("conway.gif")
 ```
 
-# [Spaceship](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) "gliders"
+## Spaceship Gliders
 
-Build simple glider, place it on the top-left-corner of space:
+A [spaceship glider](https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton)) is a pattern which reappears after a certain number of generations (period) in the same orientation but in a different position.
+
+Here we will hand-pixelate the "light" glider and translate it to the top-left corner of the array.
 
 ```{r}
 df_glider0 <- tribble(~i,~j,
@@ -95,12 +95,18 @@ df_sim_gliders <- df_gliders %>% conway_sim(120)
 df_sim_gliders %>% make_anim_gif("gliders.gif",fps=6)
 ```
 
+Notice its periodic motion:
+
 ```{r,echo=FALSE, out.width='100%'}
 #![Conway Frames](conway.gif)
 knitr::include_graphics("gliders.gif")
 ```
 
-Let's build Gosper's [Glider Gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)
+## Gosper's Glider Gun
+
+A "gun" is a pattern w/ a main part that repeats periodically, like an oscillator, and that also periodically emits spaceships.
+
+Below we hand pixelate [Gosper's Glider Gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)) and translate it to the top-left corner:
 
 ```{r}
 df_glider_gun0 <-
@@ -119,22 +125,23 @@ df_glider_gun0 <-
           36,7,36,8,37,7,37,8) %>%
   mutate(status="live")
 df_glider_gun <- df_glider_gun0 %>%
-  mutate(i=i+10,j=j+40)
-attr(df_glider_gun,"width") <- 50
+  mutate(j=j+54)
+attr(df_glider_gun,"width") <- 64
 
 df_glider_gun %>% plot_df
 ```
 
-Evolving its position over 120 Conway steps:
+Evolving its position over 240 Conway steps:
 
-```{r glider-sim,cache=T,message=F,results='hide'}
-df_sim_gun <- df_glider_gun %>% conway_sim(120)
+```{r glider-gun-sim,cache=T,message=F,results='hide'}
+df_sim_gun <- df_glider_gun %>% conway_sim(240)
 ```
 
 ```{r,echo=F,eval=F}
 df_sim_gun %>%
-  make_anim_gif("glider_gun.gif",fps=6)
+  make_anim_gif("glider_gun.gif",fps=10)
 ```
+Gosper's Gun is self-preserving and periodically spawns a stream of light gliders:
 
 ```{r,echo=F, out.width='100%'}
 #![Conway Frames](conway.gif)
