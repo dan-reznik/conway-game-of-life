@@ -50,7 +50,7 @@ side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
 
-```{r animate-rand,echo=F,fig.show='animate'}
+```{r animate-rand,fig.show='animate'}
 # not working, requires ffmpeg
 df_sim_rand %>% walk(~print(plot_df(.x)))
 ```
@@ -93,7 +93,7 @@ df_sim_glider <- df_gliders %>% conway_sim(120)
 
 Notice its periodic motion:
 
-```{r animate-glider,echo=F,fig.show='animate',interval=0.1, aniopts="controls,loop"}
+```{r animate-glider,fig.show='animate',interval=0.1, aniopts="controls,loop"}
 # not working, requires ffmpeg
 df_sim_glider %>% walk(~plot_df(.x))
 ```
@@ -144,7 +144,7 @@ df_sim_gun <- df_glider_gun %>% conway_sim(240)
 
 Gosper's Gun is self-preserving and periodically spawns a stream of light gliders:
 
-```{r animate-gun,echo=F,fig.show='animate'}
+```{r animate-gun,fig.show='animate'}
 # not working, requires ffmpeg
 df_sim_gun %>% walk(~print(plot_df(.x)))
 ```
