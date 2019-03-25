@@ -24,36 +24,40 @@ suppressMessages(library(Matrix))
 library(fs)
 library(magick)
 library(tictoc)
+```
+
+All logic resides on this file:
+
+``` r
 source("conway.R")
 ```
 
-Create and plot random array (see `conway_utils.R`)
+Create and plot random array:
 
 ``` r
-random_df(50,.1) %>% plot_df
-```
-
-![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
-
-Run one iteration of a conway\_step (see `conway.R`)
-
-``` r
-random_df(50,.1) %>% conway_step %>% plot_df
+df_rand <- random_df(50,.1)
+df_rand %>% plot_df
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-Conway simulation and plots. Main workhorse is `conway_step()` in the
-“conway.R” file
+Run one step of the Conway algo (see `conway.R`). Surviving cells are
+shown “blue” and newborn ones “red” (see “Survival Rules” above):
+
+``` r
+df_rand %>% conway_step %>% plot_df
+```
+
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+Create 64 x 64 random array, 33% filled-out, evolve it over 64 Conway
+steps:
 
 ``` r
 set.seed(1)
 side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
-
-Save it to animated
-.gif
 
 ``` r
 df_sim_rand %>% make_anim_gif("conway.gif")
@@ -63,7 +67,7 @@ df_sim_rand %>% make_anim_gif("conway.gif")
 
 # [Spaceship](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) “gliders”
 
-Build the simplest glider, place it on the top left corner of array.
+Build simple glider, place it on the top-left-corner of space:
 
 ``` r
 df_glider0 <- tribble(~i,~j,
@@ -80,15 +84,13 @@ attr(df_gliders,"width") <- 30
 df_gliders %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-Evolve its position over 120 conway steps:
+Evolve its position over 120 Conway steps:
 
 ``` r
 df_sim_gliders <- df_gliders %>% conway_sim(120)
 ```
-
-Show the animated results
 
 ``` r
 df_sim_gliders %>%

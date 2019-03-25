@@ -21,22 +21,28 @@ suppressMessages(library(Matrix))
 library(fs)
 library(magick)
 library(tictoc)
+```
+
+All logic resides on this file:
+
+```{r}
 source("conway.R")
 ```
 
-Create and plot random array (see `conway_utils.R`)
+Create and plot random array:
 
 ```{r}
-random_df(50,.1) %>% plot_df
+df_rand <- random_df(50,.1)
+df_rand %>% plot_df
 ```
 
-Run one iteration of a conway_step (see `conway.R`)
+Run one step of the Conway algo (see `conway.R`). Surviving cells are shown "blue" and newborn ones "red" (see "Survival Rules" above):
 
 ```{r}
-random_df(50,.1) %>% conway_step %>% plot_df
+df_rand %>% conway_step %>% plot_df
 ```
 
-Conway simulation and plots. Main workhorse is `conway_step()` in the "conway.R" file
+Create 64 x 64 random array, 33% filled-out, evolve it over 64 Conway steps:
 
 ```{r rand-sim,cache=T,message=F,results='hide'}
 set.seed(1)
@@ -51,8 +57,6 @@ for (p in plots)
   print(p)
 ```
 
-Save it to animated .gif
-
 ```{r create-anim-gif,eval=F}
 df_sim_rand %>% make_anim_gif("conway.gif")
 ```
@@ -64,7 +68,7 @@ knitr::include_graphics("conway.gif")
 
 # [Spaceship](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) "gliders"
 
-Build the simplest glider, place it on the top left corner of array.
+Build simple glider, place it on the top-left-corner of space:
 
 ```{r}
 df_glider0 <- tribble(~i,~j,
@@ -81,13 +85,11 @@ attr(df_gliders,"width") <- 30
 df_gliders %>% plot_df
 ```
 
-Evolve its position over 120 conway steps:
+Evolve its position over 120 Conway steps:
 
 ```{r glider-sim,cache=T,message=F,results='hide'}
 df_sim_gliders <- df_gliders %>% conway_sim(120)
 ```
-
-Show the animated results
 
 ```{r,eval=F}
 df_sim_gliders %>%
