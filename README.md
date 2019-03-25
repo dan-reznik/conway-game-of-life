@@ -58,7 +58,11 @@ side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
 
-<img src="conway.gif" width="100%" />
+<video controls loop>
+
+<source src="README_files/figure-gfm/animate-rand.webm" />
+
+</video>
 
 ## Spaceship Gliders
 
@@ -85,17 +89,21 @@ attr(df_gliders,"width") <- 30
 df_gliders %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 Evolve its position over 120 Conway steps:
 
 ``` r
-df_sim_gliders <- df_gliders %>% conway_sim(120)
+df_sim_glider <- df_gliders %>% conway_sim(120)
 ```
 
 Notice its periodic motion:
 
-<img src="gliders.gif" width="100%" />
+<video controls loop>
+
+<source src="README_files/figure-gfm/animate-glider.webm" />
+
+</video>
 
 ## Gosper’s Glider Gun
 
@@ -129,7 +137,7 @@ attr(df_glider_gun,"width") <- 64
 df_glider_gun %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Evolving its position over 240 Conway steps:
 
@@ -140,4 +148,8 @@ df_sim_gun <- df_glider_gun %>% conway_sim(240)
 Gosper’s Gun is self-preserving and periodically spawns a stream of
 light gliders:
 
-<img src="glider_gun.gif" width="100%" />
+<video controls loop>
+
+<source src="README_files/figure-gfm/animate-gun.webm" />
+
+</video>
