@@ -99,12 +99,6 @@ df_sim_glider <- df_gliders %>% conway_sim(120)
 
 Notice its periodic motion:
 
-<video controls loop>
-
-<source src="README_files/figure-gfm/animate-glider.webm" />
-
-</video>
-
 ## Gosper’s Glider Gun
 
 A “gun” is a pattern w/ a main part that repeats periodically, like an
