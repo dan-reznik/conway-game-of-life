@@ -1,3 +1,38 @@
+### utilities
+
+# plot on-cells listed in data frame
+plot_df <- function(df,frame=NULL) {
+  width <- attr(df,"width")
+  frame_s <- if(is.null(frame)) "" else sprintf(", frame=%d",frame)
+  df %>%
+    ggplot(aes(i,j)) +
+    geom_tile(aes(fill=status),height=1,width=1) +
+    coord_fixed(xlim=c(1,width),ylim=c(1,width)) +
+    scale_fill_manual(values = c(live="blue",born="red",dead="white")) +
+    labs(title=sprintf("%d x %d%s",width,width,frame_s)) +
+    #coord_cartesian(xlim=c(1L,width),ylim=c(1L,width)) +
+    theme(#legend.position = "none",
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      panel.grid = element_blank(),
+      #panel.grid.minor = element_blank(),
+      axis.ticks = element_blank(),
+      legend.key.size = unit(2, "mm"))
+}
+
+# Generate random array of on-cells
+random_df <- function(width,pct_on) {
+  samples <- (width*width*pct_on) %>% as.integer
+  df <- tibble(i=sample.int(width,samples,replace=T),
+               j=sample.int(width,samples,replace=T),
+               status="live")
+  attr(df,"width") <- width
+  df
+}
+
+
+### tibble-based conway step routines
+
 get_neighs <- function(i,j)
   tibble(i=c(rep(i-1,3),rep(i,3),rep(i+1,3)),
          j=rep(c(j-1,j,j+1),3))
@@ -55,4 +90,45 @@ conway_step <- function(df_m) { # sparse
     select(i,j,status)
   attr(df_out,"width") <- width
   df_out
+}
+
+conway_sim <- function(df_init,frames) {
+  tic()
+  dfs <- 1:frames %>%
+    accumulate(~{print(.y);conway_step(.x)},
+               .init=df_init)
+  toc()
+  dfs
+}
+
+### Saving frames and animation
+
+# Save frames as .png's to output directory
+
+make_frames <- function(dfs,dir_frames="frames") {
+  if(dir_exists(dir_frames))
+    dir_delete(dir_frames)
+  dir_create(dir_frames)
+  
+  dfs%>%iwalk(~{
+    fname<-sprintf("%s/%03d.png",dir_frames,.y)
+    ggsave(fname,plot_df(.x,.y))
+  })  
+}
+
+# Create animated .gif of frames
+
+make_anim_gif <- function(dfs, fname_gif,
+                          fps=2,
+                          dir_frames="frames") {
+  dfs%>%make_frames(dir_frames)
+  
+  dir_ls(dir_frames,regexp="\\d+\\.png") %>%
+    map(image_read) %>%
+    image_join() %>% 
+    image_animate(fps=fps) %>% 
+    image_write(fname_gif)
+  
+  dir_delete(dir_frames)
+  
 }
