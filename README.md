@@ -2,21 +2,20 @@
 # Conway’s “Game of Life” w/ `tibble()` logic
 
 The [Game of
-Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), also known
-simply as Life, is a cellular automaton devised by the British
-mathematician John Horton Conway in 1970.
+Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) is a
+cellular automaton devised by the British mathematician John H. Conway
+in 1970.
 
 ## Survival rules:
 
   - A live cell survives if it has 2 or 3 neighbors, else it dies
-  - A dead cell is “born” if it has exactly 3.
+  - A dead cell is “born” if it has exactly 3 neighbors.
 
 ## R Implementation
 
 The code below will use `tibbles()` and sparse matrices to evolve an
-initial configuration of 100x100 cells, 10% of which are randomly
-initialized as “alive”. The update logic is contained in file `conway.R`
-included in the project.
+initial random configuration of alive cells. All update logic is in file
+`conway.R` included in the project.
 
 ``` r
 suppressMessages(library(tidyverse))
