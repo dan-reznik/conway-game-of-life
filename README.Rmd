@@ -57,7 +57,7 @@ for (p in plots)
   print(p)
 ```
 
-```{r create-anim-gif,eval=F}
+```{r create-anim-gif,echo=F,eval=F}
 df_sim_rand %>% make_anim_gif("conway.gif")
 ```
 
@@ -91,12 +91,52 @@ Evolve its position over 120 Conway steps:
 df_sim_gliders <- df_gliders %>% conway_sim(120)
 ```
 
-```{r,eval=F}
-df_sim_gliders %>%
-  make_anim_gif("gliders.gif",fps=6)
+```{r,eval=F,echo=F}
+df_sim_gliders %>% make_anim_gif("gliders.gif",fps=6)
 ```
 
 ```{r,echo=FALSE, out.width='100%'}
 #![Conway Frames](conway.gif)
 knitr::include_graphics("gliders.gif")
+```
+
+Let's build Gosper's [Glider Gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)
+
+```{r}
+df_glider_gun0 <-
+  tribble(~i,~j,
+          2,5,3,5,2,6,3,6,
+          #
+          12,4,12,5,12,6,13,3,13,7,14,2,14,8,
+          15,2,15,8,16,5,17,3,17,7,
+          18,4,18,5,18,6,19,5,
+          #
+          22,6,22,7,22,8,23,6,23,7,23,8,
+          24,5,24,9,
+          #
+          26,4,26,5,26,9,26,10,
+          #
+          36,7,36,8,37,7,37,8) %>%
+  mutate(status="live")
+df_glider_gun <- df_glider_gun0 %>%
+  mutate(i=i+10,j=j+40)
+attr(df_glider_gun,"width") <- 50
+
+df_glider_gun %>% plot_df
+```
+
+Evolving its position over 120 Conway steps:
+
+```{r glider-sim,cache=T,message=F,results='hide'}
+df_sim_gun <- df_glider_gun %>% conway_sim(120)
+```
+
+```{r,echo=F,eval=F}
+df_sim_gun %>%
+  make_anim_gif("glider_gun.gif",fps=6)
+```
+
+```{r,echo=F, out.width='100%'}
+#![Conway Frames](conway.gif)
+knitr::include_graphics("glider_gun.gif")
 ```

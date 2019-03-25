@@ -58,15 +58,17 @@ side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
 
-``` r
-df_sim_rand %>% make_anim_gif("conway.gif")
-```
-
 <img src="conway.gif" width="100%" />
 
-# [Spaceship](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) “gliders”
+## Spaceship Gliders
 
-Build simple glider, place it on the top-left-corner of space:
+A [spaceship
+glider](https://en.wikipedia.org/wiki/Spaceship_\(cellular_automaton\))
+is a pattern which reappears after a certain number of generations
+(period) in the same orientation but in a different position.
+
+Here we will hand-pixelate the “light” glider and translate it to the
+top-left corner of the array.
 
 ``` r
 df_glider0 <- tribble(~i,~j,
@@ -91,9 +93,51 @@ Evolve its position over 120 Conway steps:
 df_sim_gliders <- df_gliders %>% conway_sim(120)
 ```
 
-``` r
-df_sim_gliders %>%
-  make_anim_gif("gliders.gif",fps=6)
-```
+Notice its periodic motion:
 
 <img src="gliders.gif" width="100%" />
+
+## Gosper’s Glider Gun
+
+A “gun” is a pattern w/ a main part that repeats periodically, like an
+oscillator, and that also periodically emits spaceships.
+
+Below we hand pixelate [Gosper’s Glider
+Gun](https://en.wikipedia.org/wiki/Gun_\(cellular_automaton\)) and
+translate it to the top-left corner:
+
+``` r
+df_glider_gun0 <-
+  tribble(~i,~j,
+          2,5,3,5,2,6,3,6,
+          #
+          12,4,12,5,12,6,13,3,13,7,14,2,14,8,
+          15,2,15,8,16,5,17,3,17,7,
+          18,4,18,5,18,6,19,5,
+          #
+          22,6,22,7,22,8,23,6,23,7,23,8,
+          24,5,24,9,
+          #
+          26,4,26,5,26,9,26,10,
+          #
+          36,7,36,8,37,7,37,8) %>%
+  mutate(status="live")
+df_glider_gun <- df_glider_gun0 %>%
+  mutate(j=j+54)
+attr(df_glider_gun,"width") <- 64
+
+df_glider_gun %>% plot_df
+```
+
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Evolving its position over 240 Conway steps:
+
+``` r
+df_sim_gun <- df_glider_gun %>% conway_sim(240)
+```
+
+Gosper’s Gun is self-preserving and periodically spawns a stream of
+light gliders:
+
+<img src="glider_gun.gif" width="100%" />

@@ -1,3 +1,4 @@
+# not used yet, just test
 library(OpenImageR)
 
 test_conv <- function(m,pct_n=.1,width_k=3) {

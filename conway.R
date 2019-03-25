@@ -101,8 +101,7 @@ conway_sim <- function(df_init,frames) {
   dfs
 }
 
-### Saving frames and animation
-
+### Saving frames and creating anumated gif
 # Save frames as .png's to output directory
 
 make_frames <- function(dfs,dir_frames="frames") {
