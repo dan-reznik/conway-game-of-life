@@ -50,17 +50,16 @@ side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
 
-```{r animate-rand,fig.show='animate'}
+```{r animate-rand,eval=F,echo=F,fig.show='animate'}
 # not working, requires ffmpeg
 df_sim_rand %>% walk(~print(plot_df(.x)))
 ```
 
-```{r create-anim-gif,echo=F,eval=F}
+```{r create-anim-gif,eval=F,echo=F,message=F,cache=T}
 df_sim_rand %>% make_anim_gif("conway.gif")
 ```
 
-```{r,echo=FALSE, out.width='100%',eval=F}
-#![Conway Frames](conway.gif)
+```{r,eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("conway.gif")
 ```
 
@@ -93,17 +92,16 @@ df_sim_glider <- df_gliders %>% conway_sim(120)
 
 Notice its periodic motion:
 
-```{r animate-glider,fig.show='animate',interval=0.1, aniopts="controls,loop"}
+```{r animate-glider,eval=F,echo=F,fig.show='animate',interval=0.1, aniopts="controls,loop"}
 # not working, requires ffmpeg
 df_sim_glider %>% walk(~plot_df(.x))
 ```
 
-```{r,eval=F,echo=F}
-df_sim_glider %>% make_anim_gif("gliders.gif",fps=6)
+```{r,eval=F,echo=F,message=F,cache=T}
+df_sim_glider %>% make_anim_gif("gliders.gif",fps=10)
 ```
 
-```{r,eval=F,echo=F,out.width='100%'}
-#![Conway Frames](conway.gif)
+```{r eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("gliders.gif")
 ```
 
@@ -144,16 +142,15 @@ df_sim_gun <- df_glider_gun %>% conway_sim(240)
 
 Gosper's Gun is self-preserving and periodically spawns a stream of light gliders:
 
-```{r animate-gun,fig.show='animate'}
+```{r animate-gun,eval=F,echo=F,fig.show='animate'}
 # not working, requires ffmpeg
 df_sim_gun %>% walk(~print(plot_df(.x)))
 ```
 
-```{r,echo=F,eval=F}
+```{r,eval=F,echo=F,message=F,cache=T}
 df_sim_gun %>% make_anim_gif("glider_gun.gif",fps=10)
 ```
 
-```{r,eval=F,echo=F,out.width='100%'}
-#![Conway Frames](conway.gif)
+```{r,eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("glider_gun.gif")
 ```
