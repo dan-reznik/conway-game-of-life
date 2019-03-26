@@ -206,7 +206,7 @@ df_sim_ship <- df_ship %>% conway_sim(80)
 df_sim_ship %>% make_anim_gif("ship.gif",fps=10)
 ```
 
-And watch the critters collide against :
+And watch the critters collide (how cruel!):
 
 ```{r,eval=T,echo=F,out.width='50%'}
 knitr::include_graphics("ship.gif")

@@ -65,6 +65,7 @@ df_to_sparse <- function(df,width) {
 
 conway_step <- function(df_m) { # sparse
   width <- attr(df_m,"width")
+  # use data.table for faster lookup
   m <- df_m %>% df_to_sparse(width)
   
   live_cells <- df_m %>%

@@ -193,6 +193,6 @@ And run 80 steps of a Conway simulation:
 df_sim_ship <- df_ship %>% conway_sim(80)
 ```
 
-And watch the critters collide against :
+And watch the critters collide (how cruel\!):
 
 <img src="ship.gif" width="50%" />
