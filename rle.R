@@ -23,7 +23,7 @@ expand_rle_items <- function(s) {
 expand_rle_items_v <- Vectorize(expand_rle_items)
 
 get_ons <- function(s) s %>%
-  str_split("")%>%
+  str_extract_all(".")%>%
   map(str_which,fixed("o"))
 
 rle2df <- function(rle) {
@@ -46,13 +46,25 @@ rle2df <- function(rle) {
 
 # http://www.conwaylife.com/wiki/Spaceship
 
-plot_rle <- function(rle) {
-  rle2df(rle) %>%
+plot_rle <- function(rle,title) {
+  df <- rle2df(rle)
+  xmax <- attr(df,"xmax")
+  ymax <- attr(df,"ymax")
+  df %>%
     ggplot(aes(x,y)) +
-    geom_point() +
-    coord_fixed()
+    geom_tile(width=.75,height=.75,fill="blue") +
+    coord_fixed() +
+    scale_x_continuous(breaks=1:xmax,labels=1:xmax) +
+    scale_y_continuous(breaks=1:ymax,labels=1:ymax,
+                       trans="reverse") +
+    labs(title=title) +
+    theme(axis.title=element_blank(),
+          #axis.ticks = element_blank(),
+          #axis.text=element_blank()
+          panel.grid.minor = element_blank()
+          )
 }
 
 df_rle <- read_csv("rle.csv")
 # df_gosper <- rle2df(rle_gosper)
-df_rle%>%pull(rle)%>%walk(plot_rle)
+df_rle%>%pmap(~plot_rle(..3,..1))
