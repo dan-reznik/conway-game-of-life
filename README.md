@@ -141,3 +141,58 @@ Gosper’s Gun is self-preserving and periodically spawns a stream of
 light gliders:
 
 <img src="glider_gun.gif" width="100%" />
+
+## Large Spaceship
+
+Larger creatures are represented in a run-length encoded (aka.
+[RLE](http://www.conwaylife.com/wiki/Run_Length_Encoded)) format. File
+`rle.R` contains some utility functions to convert from this format to
+`tibble`.
+
+``` r
+source("rle.R")
+```
+
+For example, a 72-cell spaceship is represented by the following
+rle:
+
+``` r
+rle_ship <- "6b3o7b3o$2bob2o3bo5bo3b2obo$b3o3bobo5bobo3b3o$o3bo4b2o3b2o4bo3bo$bo6bob2ob2obo6bo$7bo3bobo3bo$7bo2bo3bo2bo2$9b2o3b2o$9bobobobo$10b2ob2o$11bobo$8b2obobob2o$8bobo3bobo!"
+```
+
+Its appearance is as follows:
+
+<img src="README_files/figure-gfm/unnamed-chunk-13-1.png" width="50%" />
+
+It turns out the above beast dies shortly after its released. On the
+other hand, the spaceship below will be self-preserving and glide
+indefinitely:
+
+``` r
+rle_ship64 <- "5b3o15b3o5b$4bo3bo13bo3bo4b$3b2o4bo11bo4b2o3b$2bobob2ob2o3b3o3b2ob2obobo2b$b2obo4bob2ob3ob2obo4bob2ob$o4bo3bo4bobo4bo3bo4bo$12bo5bo12b$2o7b2o9b2o7b2o!"
+```
+
+<img src="README_files/figure-gfm/unnamed-chunk-15-1.png" width="50%" />
+
+We first convert its RLE into a tibble (one row per alive cell), and
+position it on the upper area of a 48x48 array:
+
+``` r
+df_ship <- rle2df(rle_ship64) %>%
+  mutate(j=j+40,i=i+8,
+         status="live")
+attr(df_ship,"width") <- 48
+df_ship %>% plot_df
+```
+
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+Now we run a conway simulation:
+
+``` r
+df_sim_ship <- df_ship %>% conway_sim(80)
+```
+
+And obtain the following behavior:
+
+<img src="ship.gif" width="100%" />

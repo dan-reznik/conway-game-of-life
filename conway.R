@@ -73,17 +73,23 @@ conway_step <- function(df_m) { # sparse
     filter(neighs%in%c(2,3)) %>%
     mutate(status="live")
   # only consider dead_cells near live ones
-  dead_cells <- df_m %>%
+  dead_cells0 <- df_m %>%
     select(-status) %>% # so pmap works
     pmap(get_neighs) %>%
     bind_rows %>%
     filter(between(i,1L,width),
            between(j,1L,width)) %>%
-    distinct %>%
-    anti_join(df_m,by=c("i","j")) %>%
-    mutate(neighs=pmap_int(.,count_neighs0,m)) %>%
-    filter(neighs==3) %>%
-    mutate(status="born")
+    distinct
+  
+  dead_cells <- if(nrow(dead_cells0)==0)
+    dead_cells0
+  else {
+    dead_cells0 %>%
+      anti_join(df_m,by=c("i","j")) %>%
+      mutate(neighs=pmap_int(.,count_neighs0,m)) %>%
+      filter(neighs==3) %>%
+      mutate(status="born")
+  }
   
   df_out <- live_cells %>%
     bind_rows(dead_cells) %>%

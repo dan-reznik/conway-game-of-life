@@ -1,6 +1,6 @@
 library(tidyverse)
-library(glue)
-library(assertthat)
+suppressMessages(library(glue))
+suppressMessages(library(assertthat))
 
 decode_rle <- function(s) s %>%
     str_sub(end=-2) %>% # get rid of !
@@ -31,13 +31,13 @@ rle2df <- function(rle) {
                    spl=rle %>% map(split_rle),
                    items=spl%>%map(expand_rle_items_v)%>%
                      map_chr(str_c,collapse=""),
-                   x=items%>%get_ons,
-                   xmax=x%>%map_int(last))%>%
-    mutate(y=row_number())
+                   i=items%>%get_ons,
+                   xmax=i%>%map_int(last))%>%
+    mutate(j=row_number())
   
   df_narrow <- df_rle %>%
-    select(x,y) %>%
-    unnest(x)
+    select(i,j) %>%
+    unnest(i)
   
   attr(df_narrow,"xmax") <- max(df_rle$xmax)
   attr(df_narrow,"ymax") <- nrow(df_rle)
@@ -51,7 +51,7 @@ plot_rle <- function(rle,title) {
   xmax <- attr(df,"xmax")
   ymax <- attr(df,"ymax")
   df %>%
-    ggplot(aes(x,y)) +
+    ggplot(aes(i,j)) +
     geom_tile(width=.75,height=.75,fill="blue") +
     coord_fixed() +
     scale_x_continuous(breaks=1:xmax,labels=1:xmax) +
@@ -65,6 +65,9 @@ plot_rle <- function(rle,title) {
           )
 }
 
-df_rle <- read_csv("rle.csv")
-# df_gosper <- rle2df(rle_gosper)
-df_rle%>%pmap(~plot_rle(..3,..1))
+read_and_plot <- function(fname="rle.csv") {
+  df_rle <- read_csv(fname)
+  df_rle%>%pmap(~plot_rle(..3,..1))
+}
+
+# read_and_plot()
