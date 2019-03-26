@@ -31,14 +31,14 @@ source("conway.R")
 
 Create and plot random array:
 
-```{r,out.width='50%'}
+```{r,out.width='100%'}
 df_rand <- random_df(50,.1)
 df_rand %>% plot_df
 ```
 
 Run one step of the Conway algo (see `conway.R`). Surviving cells are shown "blue" and newborn ones "red" (see "Survival Rules" above):
 
-```{r,out.width='50%'}
+```{r,out.width='100%'}
 df_rand %>% conway_step %>% plot_df
 ```
 
@@ -59,7 +59,7 @@ df_sim_rand %>% walk(~print(plot_df(.x)))
 df_sim_rand %>% make_anim_gif("conway.gif")
 ```
 
-```{r,eval=T,echo=F,out.width='50%'}
+```{r,eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("conway.gif")
 ```
 
@@ -69,7 +69,7 @@ A [spaceship glider](https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton
 
 Here we will hand-pixelate the "light" glider and translate it to the top-left corner of the array.
 
-```{r,out.width='50%'}
+```{r,out.width='100%'}
 df_glider0 <- tribble(~i,~j,
                         1,1,
                         2,1,
@@ -101,7 +101,7 @@ df_sim_glider %>% walk(~plot_df(.x))
 df_sim_glider %>% make_anim_gif("gliders.gif",fps=10)
 ```
 
-```{r eval=T,echo=F,out.width='50%'}
+```{r eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("gliders.gif")
 ```
 
@@ -111,7 +111,7 @@ A "gun" is a pattern w/ a main part that repeats periodically, like an oscillato
 
 Below we hand pixelate [Gosper's Glider Gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)) and translate it to the top-left corner:
 
-```{r,out.width='50%'}
+```{r,out.width='100%'}
 df_glider_gun0 <-
   tribble(~i,~j,
           2,5,3,5,2,6,3,6,
@@ -151,7 +151,7 @@ df_sim_gun %>% walk(~print(plot_df(.x)))
 df_sim_gun %>% make_anim_gif("glider_gun.gif",fps=10)
 ```
 
-```{r,eval=T,echo=F,out.width='50%'}
+```{r,eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("glider_gun.gif")
 ```
 
@@ -171,7 +171,7 @@ rle_ship24 <- "6b3o7b3o$2bob2o3bo5bo3b2obo$b3o3bobo5bobo3b3o$o3bo4b2o3b2o4bo3bo$
 
 Its appearance is as follows:
 
-```{r,echo=F,out.width='50%'}
+```{r,echo=F,out.width='100%'}
 plot_rle(rle_ship24,"rle_ship24")
 ```
 
@@ -181,13 +181,13 @@ It turns out the above beast dies shortly after its released. On the other hand,
 rle_ship64 <- "5b3o15b3o5b$4bo3bo13bo3bo4b$3b2o4bo11bo4b2o3b$2bobob2ob2o3b3o3b2ob2obobo2b$b2obo4bob2ob3ob2obo4bob2ob$o4bo3bo4bobo4bo3bo4bo$12bo5bo12b$2o7b2o9b2o7b2o!"
 ```
 
-```{r,echo=F,out.width='50%'}
+```{r,echo=F,out.width='100%'}
 plot_rle(rle_ship64,"rle_ship64")
 ```
 
 We will place both face-to-face on a 48x48 array:
 
-```{r,out.width='50%'}
+```{r,out.width='100%'}
 df_ship <- rle2df(rle_ship64) %>%
   mutate(j=j+40,i=i+8) %>%
   bind_rows(rle2df(rle_ship24)%>%
@@ -208,6 +208,6 @@ df_sim_ship %>% make_anim_gif("ship.gif",fps=10)
 
 And watch the critters collide (how cruel!):
 
-```{r,eval=T,echo=F,out.width='50%'}
+```{r,eval=T,echo=F,out.width='100%'}
 knitr::include_graphics("ship.gif")
 ```

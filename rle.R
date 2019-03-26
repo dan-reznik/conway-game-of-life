@@ -20,7 +20,29 @@ expand_rle_items <- function(s) {
   }
 }
 
+expand_rle_items3 <- function(s) {
+  s%>%
+    map2_dfr(names(.),.,~list(name=.x,run=.y))%>%
+    mutate(run_to=cumsum(run),run_from=lag(1+run_to,default=1))%>%
+    filter(name=="o")%>%
+    select(run_from,run_to)%>%
+    pmap(~.x:.y)%>%
+    unlist
+}
+
+expand_rle_items2 <- function(s) {
+  s_ext <- s%>%str_extract_all("\\d+|[ob]")%>%first
+  l <- length(s_ext)
+  assert_that(l<=2,msg="item has wrong fmt")
+  if(l==1)
+    c(1L)%>%set_names(s_ext)
+  else
+    as.integer(s_ext[1])%>%set_names(s_ext[2])
+}
+
 expand_rle_items_v <- Vectorize(expand_rle_items)
+expand_rle_items2_v <- Vectorize(expand_rle_items2,USE.NAMES=F)
+expand_rle_items3_v <- Vectorize(expand_rle_items3,USE.NAMES=F)
 
 get_ons <- function(s) s %>%
   str_extract_all(".")%>%
@@ -28,10 +50,11 @@ get_ons <- function(s) s %>%
 
 rle2df <- function(rle) {
   df_rle <- tibble(rle=decode_rle(rle),
-                   spl=rle %>% map(split_rle),
-                   items=spl%>%map(expand_rle_items_v)%>%
-                     map_chr(str_c,collapse=""),
-                   i=items%>%get_ons,
+                   spl=rle%>%map(split_rle),
+                   #items=spl%>%map(expand_rle_items_v)%>%map_chr(str_c,collapse=""),
+                   #i=items%>%get_ons,
+                   items=spl%>%map(expand_rle_items2_v),
+                   i=items%>%map(expand_rle_items3),
                    xmax=i%>%map_int(last))%>%
     mutate(j=row_number())
   
