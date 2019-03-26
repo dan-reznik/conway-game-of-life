@@ -38,7 +38,7 @@ df_rand <- random_df(50,.1)
 df_rand %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-2-1.png" width="50%" />
 
 Run one step of the Conway algo (see `conway.R`). Surviving cells are
 shown “blue” and newborn ones “red” (see “Survival Rules” above):
@@ -47,7 +47,7 @@ shown “blue” and newborn ones “red” (see “Survival Rules” above):
 df_rand %>% conway_step %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="50%" />
 
 Create 64 x 64 random array, 33% filled-out, evolve it over 64 Conway
 steps:
@@ -58,7 +58,7 @@ side <- 64
 df_sim_rand <- random_df(side,.33) %>% conway_sim(64)
 ```
 
-<img src="conway.gif" width="100%" />
+<img src="conway.gif" width="50%" />
 
 ## Spaceship Gliders
 
@@ -85,7 +85,7 @@ attr(df_gliders,"width") <- 30
 df_gliders %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-5-1.png" width="50%" />
 
 Evolve its position over 120 Conway steps:
 
@@ -95,7 +95,7 @@ df_sim_glider <- df_gliders %>% conway_sim(120)
 
 Notice its periodic motion:
 
-<img src="gliders.gif" width="100%" />
+<img src="gliders.gif" width="50%" />
 
 ## Gosper’s Glider Gun
 
@@ -129,7 +129,7 @@ attr(df_glider_gun,"width") <- 64
 df_glider_gun %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-8-1.png" width="50%" />
 
 Evolving its position over 240 Conway steps:
 
@@ -140,7 +140,7 @@ df_sim_gun <- df_glider_gun %>% conway_sim(240)
 Gosper’s Gun is self-preserving and periodically spawns a stream of
 light gliders:
 
-<img src="glider_gun.gif" width="100%" />
+<img src="glider_gun.gif" width="50%" />
 
 ## Large Spaceship
 
@@ -157,7 +157,7 @@ For example, a 72-cell spaceship is represented by the following
 rle:
 
 ``` r
-rle_ship <- "6b3o7b3o$2bob2o3bo5bo3b2obo$b3o3bobo5bobo3b3o$o3bo4b2o3b2o4bo3bo$bo6bob2ob2obo6bo$7bo3bobo3bo$7bo2bo3bo2bo2$9b2o3b2o$9bobobobo$10b2ob2o$11bobo$8b2obobob2o$8bobo3bobo!"
+rle_ship24 <- "6b3o7b3o$2bob2o3bo5bo3b2obo$b3o3bobo5bobo3b3o$o3bo4b2o3b2o4bo3bo$bo6bob2ob2obo6bo$7bo3bobo3bo$7bo2bo3bo2bo2$9b2o3b2o$9bobobobo$10b2ob2o$11bobo$8b2obobob2o$8bobo3bobo!"
 ```
 
 Its appearance is as follows:
@@ -165,7 +165,7 @@ Its appearance is as follows:
 <img src="README_files/figure-gfm/unnamed-chunk-13-1.png" width="50%" />
 
 It turns out the above beast dies shortly after its released. On the
-other hand, the spaceship below will be self-preserving and glide
+other hand, the spaceship below is self-preserving and will glide
 indefinitely:
 
 ``` r
@@ -174,25 +174,25 @@ rle_ship64 <- "5b3o15b3o5b$4bo3bo13bo3bo4b$3b2o4bo11bo4b2o3b$2bobob2ob2o3b3o3b2o
 
 <img src="README_files/figure-gfm/unnamed-chunk-15-1.png" width="50%" />
 
-We first convert its RLE into a tibble (one row per alive cell), and
-position it on the upper area of a 48x48 array:
+We will place both face-to-face on a 48x48 array:
 
 ``` r
 df_ship <- rle2df(rle_ship64) %>%
-  mutate(j=j+40,i=i+8,
-         status="live")
+  mutate(j=j+40,i=i+8) %>%
+  bind_rows(rle2df(rle_ship24)%>%
+              mutate(i=i+12,j=14-j))
 attr(df_ship,"width") <- 48
 df_ship %>% plot_df
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+<img src="README_files/figure-gfm/unnamed-chunk-16-1.png" width="50%" />
 
-Now we run a conway simulation:
+And run 80 steps of a Conway simulation:
 
 ``` r
 df_sim_ship <- df_ship %>% conway_sim(80)
 ```
 
-And obtain the following behavior:
+And watch the critters collide against :
 
-<img src="ship.gif" width="100%" />
+<img src="ship.gif" width="50%" />

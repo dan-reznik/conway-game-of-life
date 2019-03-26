@@ -36,8 +36,9 @@ rle2df <- function(rle) {
     mutate(j=row_number())
   
   df_narrow <- df_rle %>%
+    unnest(i) %>%
     select(i,j) %>%
-    unnest(i)
+    mutate(status="live")
   
   attr(df_narrow,"xmax") <- max(df_rle$xmax)
   attr(df_narrow,"ymax") <- nrow(df_rle)
